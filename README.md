@@ -36,3 +36,10 @@ make -j
 ```
 
 The resulting executable will be stored in the root directory of the repo
+
+# Screenshots
+
+![screenshot of title screen](res/screenshots/titlescreen.png)
+![screenshot of map select screen](res/screenshots/mapselectscreen.png)
+![screenshot of gameplay](res/screenshots/gameplay1.png)
+![another screenshot of gameplay](res/screenshots/gameplay2.png)
