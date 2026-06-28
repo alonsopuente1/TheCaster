@@ -1,11 +1,11 @@
 CPP			= g++
 CPPFLAGS	= -I./include -Wextra -Wall -Wno-unused-parameter
 
-LINKFLAGS 	=
+LINKFLAGS 	= -L./lib/ -l:libCastEngine.a 
 ifeq ($(OS), Windows_NT) # windows link flags
 	LINKFLAGS += -L./lib/windows -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lWinmm -lGdi32 -lRpcrt4 -lWs2_32 -lDbghelp
 else	# linux link flags
-	LINKFLAGS += -L./lib/ -l:libCastEngine.a -L/usr/local/lib/ $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_image SDL2_mixer) -lm
+	LINKFLAGS += -L/usr/local/lib/ $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_image SDL2_mixer) -lm
 endif
 
 # folder to store .o files
@@ -26,6 +26,8 @@ TheCaster: $(CPPOBJS)
 
 $(OUT):
 	mkdir -p $(OUT)
+
+$(CPPOBJS): | $(OUT)
 
 clean:
 	rm -f $(OUT)/*.o TheCaster
