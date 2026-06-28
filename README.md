@@ -2,6 +2,9 @@
 
 This game was made using the CastEngine. Right now there is no end goal or victory, however this will be made in the future
 
+User made maps can be stored in the res/maps folder, however there is currently no specification as to how the file should be formatted
+This is because the map file format hasn't fully been made, still lots more to add and relatively simple to infer from the existing map files
+
 # Build Instructions
 
 ## Windows
