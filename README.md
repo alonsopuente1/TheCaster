@@ -9,9 +9,15 @@ This game was made using the CastEngine. Right now there is no end goal or victo
 Simply run the following commands
 
 ```
-git clone https://github.com/alonsopuente1/TheCaster.git
+git clone --recurse-submodules https://github.com/alonsopuente1/TheCaster.git
 cd TheCaster
 make -j
+```
+
+If you have already cloned the repo, you can run this in the repo
+
+```
+git submodule update --init --recursive
 ```
 
 The resulting executable will be stored in the root directory of the repo
