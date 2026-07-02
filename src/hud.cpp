@@ -21,7 +21,7 @@ void HUD::Update(Player& player)
 
     const Gun& playerGun = player.GetGun();
 
-    newAmmoText = playerGun.GetName() + " " + std::to_string(playerGun.GetAmmo());
+    newAmmoText = playerGun.GetName() + " " + std::to_string(playerGun.GetAmmo()) + "/" + std::to_string(playerGun.GetReserves());
     newHealthText = "Health: 100";
     newScoreText = "Score: 0";
 

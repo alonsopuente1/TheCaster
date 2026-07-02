@@ -8,6 +8,8 @@ else	# linux link flags
 	LINKFLAGS += -L/usr/local/lib/ $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_image SDL2_mixer) -lm
 endif
 
+LINKFLAGS += -L./external/CastEngine -l:libCastEngine.a
+
 # folder to store .o files
 OUT			= build
 SRC			= src
@@ -21,13 +23,16 @@ all: TheCaster
 $(OUT)/%.o: $(SRC)/%.cpp
 	$(CPP) -Wall -g $(CPPFLAGS) -c $< -o $@
 
-TheCaster: $(CPPOBJS)
+TheCaster: $(CPPOBJS) engine
 	$(CPP) -Wall -g $(CPPOBJS) $(LINKFLAGS) -o TheCaster
 
 $(OUT):
 	mkdir -p $(OUT)
 
 $(CPPOBJS): | $(OUT)
+
+engine:
+	$(MAKE) -C external/CastEngine
 
 clean:
 	rm -f $(OUT)/*.o TheCaster
