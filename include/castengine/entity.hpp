@@ -17,7 +17,7 @@ namespace CastEngine
         vec2d mVel = vec2d(0.f);
         vec2d mPos = vec2d(0.f);
 
-        float mRadius = 0.3f;
+        float mRadius = 0.f;
 
         bool mAlive = true;
 

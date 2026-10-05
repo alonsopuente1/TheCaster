@@ -83,6 +83,7 @@ void GameScene::OnEnter()
     enemy->SetTexture(mRenderer.texBank[mRenderer.texBank.BankSize() - 1]);
     enemy->SetPos(vec2d(4, 4));
     enemy->SetMaxSpeed(0.002f);
+    enemy->SetRadius(0.3f);
 
     mPlayer = dynamic_cast<Player*>(mEntManager.PushEntity(std::make_unique<Player>(*this, mRenderer)));
 

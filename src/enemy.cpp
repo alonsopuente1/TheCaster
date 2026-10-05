@@ -26,15 +26,15 @@ void Enemy::Think()
 
     vec2d targetPos = vec2d(static_cast<float>(mPath.front().x) + 0.5f, static_cast<float>(mPath.front().y) + 0.5f);
     vec2d toTarget = targetPos - mPos;
-    
+
     if(toTarget.GetMagnitude() < 0.5f)
     {
         mPath.erase(mPath.begin());
         toTarget = vec2d(static_cast<float>(mPath.front().x) + 0.5f, static_cast<float>(mPath.front().y) + 0.5f);
     }
     
-    vec2d desiredVel = toTarget.Normalised() * mMaxSpeed;
-    mVel = desiredVel;
+    vec2d desiredAcc = toTarget.Normalised() * mMaxSpeed;
+    mAcc = desiredAcc;
 }
 
 void Enemy::Update(float dtMs)
