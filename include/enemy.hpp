@@ -1,6 +1,7 @@
 #pragma once
 
 #include "castengine/entity.hpp"
+#include "astar.hpp"
 
 namespace CastEngine
 {
@@ -14,6 +15,11 @@ private:
 
     CastEngine::Texture* mTex;
     float mMaxSpeed;
+
+    // @brief direction of the enemy in radians
+    float mDir;
+
+    std::vector<Node> mPath;
 
 public:
     

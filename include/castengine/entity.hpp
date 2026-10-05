@@ -34,8 +34,11 @@ namespace CastEngine
 
         virtual void OnCollision(Entity& other) {}
 
-        // resolves wall collision with map in the world
-        void ResolveWallCollision(vec2d newPos);
+        /// @brief attempts to move to the new position given
+        /// @param newPos new position to attempt to move to
+        /// @details this function will check if the new position is a wall, and if it is, it will attempt to move the entity along the wall instead of through it. If the new position is not a wall, the entity will move to the new position.
+        /// @warning this function will not check for collisions with other entities, only walls in the map. If you want to check for collisions with other entities, you will need to do that in the derived class.
+        void AttemptMove(vec2d newPos);
 
         // transform
         inline void AddPos(const vec2d& pos) { mPos += pos; }

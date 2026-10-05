@@ -98,7 +98,7 @@ void Player::Update(float dtMs)
 
     vec2d newPos = mPos + (mVel * dtMs);
 
-    ResolveWallCollision(newPos);
+    AttemptMove(newPos);
 
     mCurrentGun.Update(dtMs);
 }
