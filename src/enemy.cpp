@@ -8,38 +8,26 @@
 
 void Enemy::Think()
 {
-    // pathfind to player
-    vec2d playerPos = mWorld.GetPlayerPos();
-    vec2d enemyPos = mPos;
-
-    Node startNode = { static_cast<int>(enemyPos.x), static_cast<int>(enemyPos.y), -1, -1, 0.0f, 0.0f, 0.0f };
-    Node destNode = { static_cast<int>(playerPos.x), static_cast<int>(playerPos.y), -1, -1, 0.0f, 0.0f, 0.0f };
-
-    mPath = aStar(startNode, destNode, mWorld.GetMap());
-
-    if(mPath.empty())
+    if(mTimer >= 5000)
     {
-        mAcc = vec2d(0.0f);
-        mVel = vec2d::AngToVec(mDir);
-        return;
-    }
+        mTimer = 0;
 
-    vec2d targetPos = vec2d(static_cast<float>(mPath.front().x) + 0.5f, static_cast<float>(mPath.front().y) + 0.5f);
-    vec2d toTarget = targetPos - mPos;
+        vec2d playerPos = mWorld.GetPlayerPos();
+        Node destNode = { static_cast<int>(playerPos.x), static_cast<int>(playerPos.y), -1, -1, 0.0f, 0.0f, 0.0f };
 
-    if(toTarget.GetMagnitude() < 0.5f)
-    {
-        mPath.erase(mPath.begin());
-        toTarget = vec2d(static_cast<float>(mPath.front().x) + 0.5f, static_cast<float>(mPath.front().y) + 0.5f);
+        mAI.SetDestination(destNode, mWorld.GetMap());
     }
-    
-    vec2d desiredAcc = toTarget.Normalised() * mMaxSpeed;
-    mAcc = desiredAcc;
 }
 
 void Enemy::Update(float dtMs)
 {
+    mTimer += dtMs;
+
     Think();
+
+    vec2d targetPos = mAI.GetCurrentTarget();
+    vec2d toTarget = targetPos - mPos;
+    vec2d desiredVel = toTarget.Normalised() * mMaxSpeed;
 
     mVel += mAcc * dtMs;
     if(mVel.GetMagnitude() > mMaxSpeed)

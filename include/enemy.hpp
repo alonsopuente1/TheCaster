@@ -1,7 +1,7 @@
 #pragma once
 
 #include "castengine/entity.hpp"
-#include "astar.hpp"
+#include "ai.hpp"
 
 namespace CastEngine
 {
@@ -18,12 +18,16 @@ private:
 
     // @brief direction of the enemy in radians
     float mDir;
+    EntityAI mAI;
 
-    std::vector<Node> mPath;
+    // Timer for enemy, every five seconds, the enemy will update its path to the player. 
+    // This is to prevent the enemy from constantly recalculating its path every frame, 
+    // which would be inefficient.
+    int mTimer;
 
 public:
     
-    using Entity::Entity;
+    Enemy(CastEngine::IWorld& world) : CastEngine::Entity(world), mAI(*this) {}
     
     /// @brief thinker function to implement simple AI
     void Think();

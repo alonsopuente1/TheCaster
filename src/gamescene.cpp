@@ -60,7 +60,6 @@ void GameScene::OnEnter()
 
     static std::string texturePaths[] = {
         "res/textures/env/bluestone.png",
-        "res/textures/env/colorstone.png",
         "res/textures/env/greystone.png",
         "res/textures/env/mossy.png",
         "res/textures/env/purplestone.png",
@@ -75,7 +74,12 @@ void GameScene::OnEnter()
     int numTextures = (static_cast<int>(sizeof(texturePaths)) / static_cast<int>(sizeof(texturePaths[0])));
     for(int i = 0; i < numTextures; i++)
     {
-        mRenderer.texBank.PushTexture(CastEngine::Texture(mWindow, texturePaths[i]));
+        if(!mRenderer.texBank.PushTexture(CastEngine::Texture(mWindow, texturePaths[i])))
+        {
+            LogMsgf(ERROR, "failed to load texture '%s'", texturePaths[i].c_str());
+            mParentGame.ChangeScene<MainMenuScene>();
+            return;
+        }
     }
 
     Enemy* enemy = dynamic_cast<Enemy*>(mEntManager.PushEntity(std::make_unique<Enemy>(*this)));
@@ -156,7 +160,7 @@ void GameScene::Draw()
 
     SDL_Color topColour = {40, 40, 40, 255};
     SDL_Color bottColour = {60, 60, 60, 255};
-    mRenderer.RenderCeilingAndFloor(topColour, bottColour);
+    mRenderer.RenderSolidCeilingFloor(topColour, bottColour);
 
     mRenderer.RenderCameraView(mMap);
 

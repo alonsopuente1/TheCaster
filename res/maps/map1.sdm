@@ -5,6 +5,7 @@ mapdim 5 5
 
 playerstart 2 2
 playermaxspeed 0.005
+playerrotatespeed 0.0035
 
 mapstart
 11111
@@ -12,5 +13,3 @@ mapstart
 10001
 10001
 11111
-
-fileend

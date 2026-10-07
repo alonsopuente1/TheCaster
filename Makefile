@@ -1,5 +1,5 @@
 CPP			= g++
-CPPFLAGS	= -I./include -Wextra -Wall -Wno-unused-parameter
+CPPFLAGS	= -I./include -I./external/CastEngine/include -Wextra -Wall -Wno-unused-parameter
 
 LINKFLAGS 	= -L./lib/ -l:libCastEngine.a 
 ifeq ($(OS), Windows_NT) # windows link flags
@@ -36,3 +36,6 @@ engine:
 
 clean:
 	rm -f $(OUT)/*.o TheCaster
+
+clean-all: clean
+	$(MAKE) -C external/CastEngine clean
