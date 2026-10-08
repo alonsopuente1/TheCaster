@@ -145,8 +145,7 @@ void GameScene::Update(float dtMs)
         return !ent->IsAlive();
     });
 
-    mRenderer.UpdateMinimap(mEntManager, mMap);
-    mHud.Update(*mPlayer);
+    mHud.Update(mEntManager, mMap);
 
     mCam.SetDir(mPlayer->GetDir());
     mCam.SetPos(mPlayer->GetPos());
@@ -165,8 +164,6 @@ void GameScene::Draw()
     mRenderer.RenderCameraView(mMap);
 
     mEntManager.DrawEntities(mRenderer);
-
-    mRenderer.RenderMinimap();
 
     mHud.Draw();
 
