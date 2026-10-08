@@ -29,6 +29,7 @@ void Enemy::Update(float dtMs)
     vec2d toTarget = targetPos - mPos;
     vec2d desiredVel = toTarget.Normalised() * mMaxSpeed;
 
+    mVel = desiredVel;
     mVel += mAcc * dtMs;
     if(mVel.GetMagnitude() > mMaxSpeed)
         mVel.SetMagnitude(mMaxSpeed);
