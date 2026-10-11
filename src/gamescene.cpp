@@ -122,26 +122,14 @@ void GameScene::HandleEvents(SDL_Event& e)
 
     if(e.type == SDL_MOUSEBUTTONDOWN)
     {
-        if(mPlayer->TryShoot())
-        {
-            vec2d origin = mPlayer->GetPos();
-            vec2d dir = mPlayer->GetDir();
-
-            CastEngine::Map::RayCastDesc desc;
-            mMap.WallRayCast(origin, dir, desc);
-
-            auto [hitEnt, entDist] = mEntManager.RayCast(origin, dir, desc.perpWallDist);
-
-            if(hitEnt)
-                hitEnt->Destroy();
-        }
+        mPlayer->TryShoot();
     }
 }
 
 void GameScene::Update(float dtMs)
 {
     mEntManager.UpdateEntities(dtMs);
-    mEntManager.RemoveIf([](CastEngine::Entity* ent){
+    mEntManager.RemoveIf([](std::unique_ptr<CastEngine::Entity>& ent){
         return !ent->IsAlive();
     });
 

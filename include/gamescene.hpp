@@ -38,6 +38,7 @@ public:
 
     void SpawnEntity(std::unique_ptr<CastEngine::Entity>&& ptr) override;
     CastEngine::Map& GetMap() override;
+    inline CastEngine::EntityManager& GetEntityManager() override { return mEntManager; }
 
     bool IsWall(vec2d& pos) override;
     bool IsWall(int x, int y) override;

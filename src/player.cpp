@@ -3,6 +3,7 @@
 #include "castengine/logger.hpp"
 #include "castengine/map.hpp"
 #include "castengine/world.hpp"
+#include "castengine/entitymanager.hpp"
 
 Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity(world), mCurrentGun(render)
 {
@@ -22,6 +23,25 @@ Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity
         LogMsg(ERROR, "failed to load shotgun");
     }
 
+}
+
+bool Player::TryShoot()
+{
+    if(mCurrentGun.TryShoot())
+    {
+        vec2d origin = mPos;
+        vec2d dir = GetDir();
+
+        CastEngine::Map::RayCastDesc desc;
+        mWorld.GetMap().WallRayCast(origin, dir, desc);
+
+        auto [hitEnt, entDist] = mWorld.GetEntityManager().RayCast(origin, dir, desc.perpWallDist);
+
+        if(hitEnt)
+            hitEnt->Destroy();
+    }
+
+    return true;
 }
 
 void Player::HandleKeyInput(const SDL_Event &e)
