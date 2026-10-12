@@ -7,7 +7,7 @@
 
 bool Gun::Load(GunDef &def)
 {
-    if(!mAnim.LoadAnimation(def.animName, def.animFilePath))
+    if(!mAnim.LoadAnimation(def.animName, def.shootingAnimFilePath))
     {
         LogMsgf(ERROR, "failed to load '%s' animation", def.animName.c_str());
         return false;

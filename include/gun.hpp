@@ -6,7 +6,7 @@
 struct GunDef
 {
 
-    std::string animFilePath; // file path to folder containing
+    std::string shootingAnimFilePath; // file path to folder containing
                                 // gun shooting frames
     std::string animName;
 

@@ -9,7 +9,7 @@ Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity
 {
     GunDef shotgun;
     
-    shotgun.animFilePath = "./res/textures/guns/dbshotgun/FIREING";
+    shotgun.shootingAnimFilePath = "./res/textures/guns/dbshotgun/FIREING";
     shotgun.animName = "shotgun.firing";
     shotgun.damage = 50;
     shotgun.fireRateMs = 1000;
