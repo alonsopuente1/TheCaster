@@ -1,14 +1,14 @@
 #pragma once
 
-#include "castengine/animatedtexture.hpp"
+#include <unordered_map>
 
+#include "castengine/animatedtexture.hpp"
+#include "weaponanimator.hpp"
 
 struct GunDef
 {
 
-    std::string animFilePath; // file path to folder containing
-                                // gun shooting frames
-    std::string animName;
+    std::unordered_map<WeaponAnimationType, std::string> animFilePath; // map of animation names to file paths
 
     int fireRateMs;
     float texScale;     // value to scale gun textures by
@@ -36,14 +36,15 @@ private:
     int mDamage;
     float mTexScale;
 
-    CastEngine::AnimatedTexture mAnim;
+    WeaponAnimator mAnim;
     
     std::string mName;
 
+    CastEngine::Renderer& mRender;
+
 public:
 
-    Gun(CastEngine::Renderer& rend) : mAnim(rend) {}
-    ~Gun() { mAnim.Destroy(); }
+    Gun(CastEngine::Renderer& rend) : mRender(rend) {}
 
     bool Load(GunDef& def);
     void Update(float dtMs);

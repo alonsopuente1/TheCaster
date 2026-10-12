@@ -45,6 +45,11 @@ vec2d GameScene::GetPlayerDir() const
     return mPlayer->GetDir();
 }
 
+CastEngine::EntityManager& GameScene::GetEntityManager()
+{
+    return mEntManager;
+}
+
 // IScene interface overrides
 
 void GameScene::OnEnter()
@@ -141,7 +146,7 @@ void GameScene::HandleEvents(SDL_Event& e)
 void GameScene::Update(float dtMs)
 {
     mEntManager.UpdateEntities(dtMs);
-    mEntManager.RemoveIf([](CastEngine::Entity* ent){
+    mEntManager.RemoveIf([](std::unique_ptr<CastEngine::Entity>& ent){
         return !ent->IsAlive();
     });
 

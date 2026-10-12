@@ -7,10 +7,13 @@
 
 bool Gun::Load(GunDef &def)
 {
-    if(!mAnim.LoadAnimation(def.animName, def.animFilePath))
+    for(auto [type, filePath] : def.animFilePath)
     {
-        LogMsgf(ERROR, "failed to load '%s' animation", def.animName.c_str());
-        return false;
+        CastEngine::AnimatedTexture animation(mRender);
+        if(!animation.LoadAnimation(gAnimTypeStrings[static_cast<int>(type)], filePath))
+            continue;
+        
+        mAnim.Add(type, std::move(animation));
     }
 
     if(def.fireRateMs <= 0)
@@ -20,7 +23,10 @@ bool Gun::Load(GunDef &def)
     }
 
     mFireRateMs = def.fireRateMs;
-    mAnim.SetAnimationTime(def.fireRateMs);
+
+    CastEngine::AnimatedTexture* shootAnimation = mAnim.Find(WeaponAnimationType::Shoot);
+    if(shootAnimation)
+        shootAnimation->SetAnimationTime(def.fireRateMs);
 
     if(def.damage < 0)
     {
@@ -63,14 +69,16 @@ void Gun::Update(float dtMs)
     if(mCooldownMs < mFireRateMs)
         mCooldownMs += dtMs;
 
-    mAnim.Update(dtMs);
+    mAnim.GetCurrentAnimation()->Update(dtMs);
 }
 
 void Gun::Draw(CastEngine::Renderer &render)
 {
-    CastEngine::Texture* tex = mAnim.GetTexture();
-    if(!tex || !tex->IsInitialised()) return;
+    CastEngine::AnimatedTexture* animTex = mAnim.GetCurrentAnimation();
+    if(!animTex || !animTex->IsInitialised()) return;
         
+    CastEngine::Texture* tex = animTex->GetTexture();
+
     CastEngine::Window& window = render.GetWindow();
     
     int windowW = window.GetWidth();
@@ -98,7 +106,7 @@ bool Gun::TryShoot()
     if(mAmmo <= 0 || !IsReady())
         return false;
     mCooldownMs = 0;
-    mAnim.PlayOnce();
+    mAnim.Play(WeaponAnimationType::Shoot);
     mAmmo--;
 
     return true;
