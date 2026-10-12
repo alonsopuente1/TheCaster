@@ -48,7 +48,7 @@ public:
 
     inline vec2d GetDir() const { return vec2d::AngToVec(mViewAngle); }
         
-    bool TryShoot();
+    void TryShoot();
     inline Gun& GetGun() { return mCurrentGun; }
 
     void HandleKeyInput(const SDL_Event& e);

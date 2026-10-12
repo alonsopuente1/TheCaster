@@ -25,7 +25,7 @@ Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity
 
 }
 
-bool Player::TryShoot()
+void Player::TryShoot()
 {
     if(mCurrentGun.TryShoot())
     {
@@ -40,8 +40,6 @@ bool Player::TryShoot()
         if(hitEnt)
             hitEnt->Destroy();
     }
-
-    return true;
 }
 
 void Player::HandleKeyInput(const SDL_Event &e)
