@@ -69,7 +69,24 @@ void Gun::Update(float dtMs)
     if(mCooldownMs < mFireRateMs)
         mCooldownMs += dtMs;
 
-    mAnim.GetCurrentAnimation()->Update(dtMs);
+    mAnim.Update(dtMs);
+
+    if(!mAnim.HasFinished())
+        return;
+
+    switch(mAnim.GetCurrentType())
+    {
+
+    case WeaponAnimationType::Shoot:
+        mAnim.Loop(WeaponAnimationType::Idle);
+        break;
+
+    case WeaponAnimationType::Reload:
+        mAnim.Loop(WeaponAnimationType::Idle);
+        break;
+    default:
+        break;
+    }
 }
 
 void Gun::Draw(CastEngine::Renderer &render)
@@ -106,7 +123,7 @@ bool Gun::TryShoot()
     if(mAmmo <= 0 || !IsReady())
         return false;
     mCooldownMs = 0;
-    mAnim.Play(WeaponAnimationType::Shoot);
+    mAnim.PlayOnce(WeaponAnimationType::Shoot);
     mAmmo--;
 
     return true;

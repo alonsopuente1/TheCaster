@@ -5,7 +5,7 @@ bool WeaponAnimator::ResolveMissingAnim(WeaponAnimationType type, MissingAnimPol
     switch(policy)
     {   
     case MissingAnimPolicy::UseIdle:
-        Play(WeaponAnimationType::Idle, MissingAnimPolicy::Error);
+        Loop(WeaponAnimationType::Idle, MissingAnimPolicy::Error);
         break;
     case MissingAnimPolicy::Error:
         LogMsgf(ERROR, "missing '%s' animation", gAnimTypeStrings[static_cast<int>(policy)].c_str());
@@ -34,12 +34,45 @@ const CastEngine::AnimatedTexture* WeaponAnimator::Find(WeaponAnimationType type
     return nullptr;
 }
 
+void WeaponAnimator::Update(float dtMs)
+{
+    CastEngine::AnimatedTexture* animation = Find(mCurrentAnim);
+
+    if(!animation)
+        return;
+
+    animation->Update(dtMs);
+}
+
+bool WeaponAnimator::IsPlaying() const
+{
+    const CastEngine::AnimatedTexture* animation = Find(mCurrentAnim);
+
+    if(!animation)
+        return false;
+
+    return animation->IsPlaying();
+}
+
+bool WeaponAnimator::HasFinished() const
+{
+    const CastEngine::AnimatedTexture* animation = Find(mCurrentAnim);
+
+    if(!animation)
+        return false;
+
+    return animation->HasFinished();
+}
+
 void WeaponAnimator::Add(WeaponAnimationType type, CastEngine::AnimatedTexture&& anim)
 {
+    if(!anim.IsInitialised())
+        return;
+
     mAnim.insert_or_assign(type, std::move(anim));
 }
 
-bool WeaponAnimator::Play(WeaponAnimationType type, MissingAnimPolicy policy)
+bool WeaponAnimator::PlayOnce(WeaponAnimationType type, MissingAnimPolicy policy)
 {
     CastEngine::AnimatedTexture* animation = Find(type);
         
@@ -48,10 +81,32 @@ bool WeaponAnimator::Play(WeaponAnimationType type, MissingAnimPolicy policy)
 
     mCurrentAnim = type;
 
+    animation->PlayOnce();
+
     return true;
 }
+
+bool WeaponAnimator::Loop(WeaponAnimationType type, MissingAnimPolicy policy)
+{
+    CastEngine::AnimatedTexture* animation = Find(type);
+
+    if(!animation)
+        return ResolveMissingAnim(type, policy);
+    
+    mCurrentAnim = type;
+
+    animation->Loop();
+
+    return true;
+}
+
 
 CastEngine::AnimatedTexture* WeaponAnimator::GetCurrentAnimation()
 {
     return Find(mCurrentAnim);
+}
+
+WeaponAnimationType WeaponAnimator::GetCurrentType() const
+{
+    return mCurrentAnim;
 }

@@ -44,13 +44,18 @@ private:
 public:
 
     CastEngine::AnimatedTexture* Find(WeaponAnimationType type);
-
     const CastEngine::AnimatedTexture* Find(WeaponAnimationType type) const;
+
+    void Update(float dtMs);
 
     void Add(WeaponAnimationType type, CastEngine::AnimatedTexture&& anim);
 
-    bool Play(WeaponAnimationType type, MissingAnimPolicy policy = MissingAnimPolicy::Error);
+    bool PlayOnce(WeaponAnimationType type, MissingAnimPolicy policy = MissingAnimPolicy::Error);
+    bool Loop(WeaponAnimationType type, MissingAnimPolicy policy = MissingAnimPolicy::Error);
+
+    bool IsPlaying() const;
+    bool HasFinished() const;
 
     CastEngine::AnimatedTexture* GetCurrentAnimation();
-
+    WeaponAnimationType GetCurrentType() const;
 };
