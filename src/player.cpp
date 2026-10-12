@@ -27,19 +27,19 @@ Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity
 
 void Player::TryShoot()
 {
-    if(mCurrentGun.TryShoot())
-    {
+    if(!mCurrentGun.TryShoot())
+        return;
+
         vec2d origin = mPos;
-        vec2d dir = GetDir();
+    vec2d dir = GetDir();
 
-        CastEngine::Map::RayCastDesc desc;
-        mWorld.GetMap().WallRayCast(origin, dir, desc);
+    CastEngine::Map::RayCastDesc desc;
+    mWorld.GetMap().WallRayCast(origin, dir, desc);
 
-        auto [hitEnt, entDist] = mWorld.GetEntityManager().RayCast(origin, dir, desc.perpWallDist);
+    auto [hitEnt, entDist] = mWorld.GetEntityManager().RayCast(origin, dir, desc.perpWallDist);
 
-        if(hitEnt)
-            hitEnt->Destroy();
-    }
+    if(hitEnt)
+        hitEnt->Destroy();
 }
 
 void Player::HandleKeyInput(const SDL_Event &e)
