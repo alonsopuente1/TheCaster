@@ -45,11 +45,6 @@ vec2d GameScene::GetPlayerDir() const
     return mPlayer->GetDir();
 }
 
-CastEngine::EntityManager& GameScene::GetEntityManager()
-{
-    return mEntManager;
-}
-
 // IScene interface overrides
 
 void GameScene::OnEnter()
