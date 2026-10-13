@@ -8,9 +8,12 @@
 Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity(world), mCurrentGun(render)
 {
     GunDef shotgun;
+
+    shotgun.animFilePath[WeaponAnimationType::Idle] = "res/textures/guns/dbshotgun/IDLEING";
+    shotgun.animFilePath[WeaponAnimationType::Shoot] = "res/textures/guns/dbshotgun/FIREING";
+    shotgun.animFilePath[WeaponAnimationType::Reload] = "res/textures/guns/dbshotgun/RELOADING";
+    shotgun.animFilePath[WeaponAnimationType::Walk] = "res/textures/guns/dbshotgun/WALKING";
     
-    shotgun.shootingAnimFilePath = "./res/textures/guns/dbshotgun/FIREING";
-    shotgun.animName = "shotgun.firing";
     shotgun.damage = 50;
     shotgun.fireRateMs = 1000;
     shotgun.magSize = 4;
@@ -58,6 +61,10 @@ void Player::HandleKeyInput(const SDL_Event &e)
 
     switch(e.key.keysym.sym)
     {
+        case SDLK_r:
+            if(state)
+                mCurrentGun.BeginReload();
+            break;
         case SDLK_w:
             State.forward = state;
             break;

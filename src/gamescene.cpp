@@ -45,6 +45,11 @@ vec2d GameScene::GetPlayerDir() const
     return mPlayer->GetDir();
 }
 
+CastEngine::EntityManager& GameScene::GetEntityManager()
+{
+    return mEntManager;
+}
+
 // IScene interface overrides
 
 void GameScene::OnEnter()
@@ -110,9 +115,6 @@ void GameScene::HandleEvents(SDL_Event& e)
         {
         case SDLK_ESCAPE:
             mParentGame.ChangeScene<MainMenuScene>();
-            break;
-        case SDLK_r:
-            mPlayer->GetGun().Reload();
             break;
         }
     }

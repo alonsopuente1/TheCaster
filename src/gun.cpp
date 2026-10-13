@@ -7,10 +7,14 @@
 
 bool Gun::Load(GunDef &def)
 {
-    if(!mAnim.LoadAnimation(def.animName, def.shootingAnimFilePath))
+
+    for(auto [type, filePath] : def.animFilePath)
     {
-        LogMsgf(ERROR, "failed to load '%s' animation", def.animName.c_str());
-        return false;
+        CastEngine::AnimatedTexture animation(mRender);
+        if(!animation.LoadAnimation(gAnimTypeStrings[static_cast<int>(type)], filePath))
+            continue;
+        
+        mAnim.Add(type, std::move(animation));
     }
 
     if(def.fireRateMs <= 0)
@@ -20,7 +24,10 @@ bool Gun::Load(GunDef &def)
     }
 
     mFireRateMs = def.fireRateMs;
-    mAnim.SetAnimationTime(def.fireRateMs);
+
+    CastEngine::AnimatedTexture* shootAnimation = mAnim.Find(WeaponAnimationType::Shoot);
+    if(shootAnimation)
+        shootAnimation->SetAnimationTime(def.fireRateMs);
 
     if(def.damage < 0)
     {
@@ -64,13 +71,33 @@ void Gun::Update(float dtMs)
         mCooldownMs += dtMs;
 
     mAnim.Update(dtMs);
+
+    if(!mAnim.HasFinished())
+        return;
+
+    switch(mAnim.GetCurrentType())
+    {
+
+    case WeaponAnimationType::Shoot:
+        mAnim.Loop(WeaponAnimationType::Idle);
+        break;
+
+    case WeaponAnimationType::Reload:
+        FinishReload();
+        mAnim.Loop(WeaponAnimationType::Idle);
+        break;
+    default:
+        break;
+    }
 }
 
 void Gun::Draw(CastEngine::Renderer &render)
 {
-    CastEngine::Texture* tex = mAnim.GetTexture();
-    if(!tex || !tex->IsInitialised()) return;
+    CastEngine::AnimatedTexture* animTex = mAnim.GetCurrentAnimation();
+    if(!animTex || !animTex->IsInitialised()) return;
         
+    CastEngine::Texture* tex = animTex->GetTexture();
+
     CastEngine::Window& window = render.GetWindow();
     
     int windowW = window.GetWidth();
@@ -98,13 +125,13 @@ bool Gun::TryShoot()
     if(mAmmo <= 0 || !IsReady())
         return false;
     mCooldownMs = 0;
-    mAnim.PlayOnce();
+    mAnim.PlayOnce(WeaponAnimationType::Shoot);
     mAmmo--;
 
     return true;
 }
     
-void Gun::Reload()
+void Gun::BeginReload()
 {
     if(mReserves <= 0)
         return;
@@ -114,6 +141,20 @@ void Gun::Reload()
     if(bulletsNeeded == 0)
         return;
 
+    // if execution reaches here, means gun can actually reload
+    // commence reload animation
+
+    mState = GunState::Reloading;
+    mAnim.PlayOnce(WeaponAnimationType::Reload);
+}
+
+void Gun::FinishReload()
+{
+    mState = GunState::Ready;
+    mAnim.Loop(WeaponAnimationType::Idle);
+    
+    int bulletsNeeded = mMagSize - mAmmo;
+    
     if(bulletsNeeded > mReserves)
         bulletsNeeded = mReserves;
 
