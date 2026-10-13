@@ -63,7 +63,6 @@ void MainMenuScene::OnEnter()
 
 void MainMenuScene::HandleEvents(SDL_Event& e)
 {
-
     if(e.type == SDL_MOUSEBUTTONDOWN)
     {
         mStartButton.HandleEvent(e);
