@@ -46,8 +46,6 @@ public:
     vec2d GetPlayerPos() const override;
     vec2d GetPlayerDir() const override;
 
-    CastEngine::EntityManager& GetEntityManager() override;
-
     void OnEnter() override;
     void HandleEvents(SDL_Event& e) override;
     void Update(float dtMs) override;

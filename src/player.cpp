@@ -33,7 +33,7 @@ void Player::TryShoot()
     if(!mCurrentGun.TryShoot())
         return;
 
-        vec2d origin = mPos;
+    vec2d origin = mPos;
     vec2d dir = GetDir();
 
     CastEngine::Map::RayCastDesc desc;
