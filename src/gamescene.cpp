@@ -114,6 +114,9 @@ void GameScene::HandleEvents(SDL_Event& e)
         case SDLK_ESCAPE:
             mParentGame.ChangeScene<MainMenuScene>();
             break;
+        case SDLK_SPACE:
+            mPlayer->TryShoot();
+            break;
         }
     }
 
