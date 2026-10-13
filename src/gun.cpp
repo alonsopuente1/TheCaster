@@ -82,6 +82,7 @@ void Gun::Update(float dtMs)
         break;
 
     case WeaponAnimationType::Reload:
+        FinishReload();
         mAnim.Loop(WeaponAnimationType::Idle);
         break;
     default:
@@ -129,7 +130,7 @@ bool Gun::TryShoot()
     return true;
 }
     
-void Gun::Reload()
+void Gun::BeginReload()
 {
     if(mReserves <= 0)
         return;
@@ -139,6 +140,20 @@ void Gun::Reload()
     if(bulletsNeeded == 0)
         return;
 
+    // if execution reaches here, means gun can actually reload
+    // commence reload animation
+
+    mState = GunState::Reloading;
+    mAnim.PlayOnce(WeaponAnimationType::Reload);
+}
+
+void Gun::FinishReload()
+{
+    mState = GunState::Ready;
+    mAnim.Loop(WeaponAnimationType::Idle);
+    
+    int bulletsNeeded = mMagSize - mAmmo;
+    
     if(bulletsNeeded > mReserves)
         bulletsNeeded = mReserves;
 

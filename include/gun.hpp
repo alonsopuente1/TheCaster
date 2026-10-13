@@ -26,6 +26,12 @@ class Gun
     
 private:
 
+    enum class GunState : int
+    {
+        Ready,
+        Reloading
+    };
+
     int mAmmo;       // amount of bullets currently in magazine
     int mReserves;   // amount of bullets left over
     int mMagSize;    // max size of magazine
@@ -41,7 +47,11 @@ private:
     std::string mName;
 
     CastEngine::Renderer& mRender;
-
+    
+    GunState mState = GunState::Ready;
+    
+    void FinishReload();
+    
 public:
 
     Gun(CastEngine::Renderer& rend) : mRender(rend) {}
@@ -51,9 +61,10 @@ public:
     void Draw(CastEngine::Renderer& render);
         
     bool TryShoot();
-    void Reload();
 
-    inline bool IsReady() { return mCooldownMs >= mFireRateMs; }
+    void BeginReload();
+
+    inline bool IsReady() { return mCooldownMs >= mFireRateMs && mState == GunState::Ready; }
 
     inline int GetDamage() { return mDamage; }
 

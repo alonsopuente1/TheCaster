@@ -43,6 +43,10 @@ void Player::HandleKeyInput(const SDL_Event &e)
 
     switch(e.key.keysym.sym)
     {
+        case SDLK_r:
+            if(state)
+                mCurrentGun.BeginReload();
+            break;
         case SDLK_w:
             State.forward = state;
             break;
