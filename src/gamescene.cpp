@@ -82,12 +82,15 @@ void GameScene::OnEnter()
         }
     }
 
-    Enemy* enemy = dynamic_cast<Enemy*>(mEntManager.PushEntity(std::make_unique<Enemy>(*this)));
+    for(const auto& pos : args.enemySpawnPos)
+    {
+        Enemy* newEnemy = dynamic_cast<Enemy*>(mEntManager.PushEntity(std::make_unique<Enemy>(*this)));
 
-    enemy->SetTexture(mRenderer.texBank[mRenderer.texBank.BankSize() - 1]);
-    enemy->SetPos(vec2d(4, 4));
-    enemy->SetMaxSpeed(0.002f);
-    enemy->SetRadius(0.3f);
+        newEnemy->SetTexture(mRenderer.texBank["res/textures/enemies/cacodemon.png"]);
+        newEnemy->SetRadius(0.3f);
+        newEnemy->SetPos(pos);
+        newEnemy->SetMaxSpeed(0.002f);
+    }
 
     mPlayer = dynamic_cast<Player*>(mEntManager.PushEntity(std::make_unique<Player>(*this, mRenderer)));
 
