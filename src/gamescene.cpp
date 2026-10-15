@@ -106,7 +106,6 @@ void GameScene::OnEnter()
 
 void GameScene::HandleEvents(SDL_Event& e)
 {
-
     if(e.type == SDL_KEYDOWN)
     {
         switch(e.key.keysym.sym)
