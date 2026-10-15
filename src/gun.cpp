@@ -132,7 +132,10 @@ bool Gun::TryShoot()
 }
     
 void Gun::BeginReload()
-{
+{   
+    if(mState == GunState::Reloading)
+        return;
+
     if(mReserves <= 0)
         return;
 
