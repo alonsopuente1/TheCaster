@@ -1,9 +1,11 @@
 #pragma once
 
-#include "castengine/entity.hpp"
+#include "castengine/spriteentity.hpp"
 
-class Item : public CastEngine::Entity
+class AmmoPickup : public CastEngine::SpriteEntity
 {
+
+private:
 
 public:
 
