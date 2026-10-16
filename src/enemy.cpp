@@ -40,8 +40,3 @@ void Enemy::Update(float dtMs)
     while(mDir > M_PI * 2.f)
         mDir -= M_PI * 2.f;
 }
-
-void Enemy::Draw(CastEngine::Renderer& render)
-{
-    render.RenderSprite(mTex, mPos);
-}
