@@ -36,3 +36,6 @@ engine:
 
 clean:
 	rm -f $(OUT)/*.o TheCaster
+
+clean-all: clean
+	$(MAKE) -C external/CastEngine clean

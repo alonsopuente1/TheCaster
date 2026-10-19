@@ -20,7 +20,6 @@ MainMenuScene::~MainMenuScene()
 void MainMenuScene::OnEnter()
 {
     mWindow.SetTitle("Main Menu");
-    mRenderer.texBank.PushTexture(CastEngine::Texture(mParentGame.GetWindow(), "res/textures/enemies/cacodemon.png"));
 
     if(!CastEngine::LoadFont("res/fonts/runescape.ttf", 48))
     {
@@ -64,7 +63,6 @@ void MainMenuScene::OnEnter()
 
 void MainMenuScene::HandleEvents(SDL_Event& e)
 {
-
     if(e.type == SDL_MOUSEBUTTONDOWN)
     {
         mStartButton.HandleEvent(e);

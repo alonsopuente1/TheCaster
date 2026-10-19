@@ -60,7 +60,6 @@ void GameScene::OnEnter()
 
     static std::string texturePaths[] = {
         "res/textures/env/bluestone.png",
-        "res/textures/env/colorstone.png",
         "res/textures/env/greystone.png",
         "res/textures/env/mossy.png",
         "res/textures/env/purplestone.png",
@@ -75,14 +74,23 @@ void GameScene::OnEnter()
     int numTextures = (static_cast<int>(sizeof(texturePaths)) / static_cast<int>(sizeof(texturePaths[0])));
     for(int i = 0; i < numTextures; i++)
     {
-        mRenderer.texBank.PushTexture(CastEngine::Texture(mWindow, texturePaths[i]));
+        if(!mRenderer.texBank.PushTexture(CastEngine::Texture(mWindow, texturePaths[i])))
+        {
+            LogMsgf(ERROR, "failed to load texture '%s'", texturePaths[i].c_str());
+            mParentGame.ChangeScene<MainMenuScene>();
+            return;
+        }
     }
 
-    Enemy* enemy = dynamic_cast<Enemy*>(mEntManager.PushEntity(std::make_unique<Enemy>(*this)));
+    for(const auto& pos : args.enemySpawnPos)
+    {
+        Enemy* newEnemy = dynamic_cast<Enemy*>(mEntManager.PushEntity(std::make_unique<Enemy>(*this)));
 
-    enemy->SetTexture(mRenderer.texBank[mRenderer.texBank.BankSize() - 1]);
-    enemy->SetPos(vec2d(4, 4));
-    enemy->SetMaxSpeed(0.005f);
+        newEnemy->SetTexture(mRenderer.texBank["res/textures/enemies/cacodemon.png"]);
+        newEnemy->SetRadius(0.3f);
+        newEnemy->SetPos(pos);
+        newEnemy->SetMaxSpeed(0.002f);
+    }
 
     mPlayer = dynamic_cast<Player*>(mEntManager.PushEntity(std::make_unique<Player>(*this, mRenderer)));
 
@@ -98,7 +106,6 @@ void GameScene::OnEnter()
 
 void GameScene::HandleEvents(SDL_Event& e)
 {
-
     if(e.type == SDL_KEYDOWN)
     {
         switch(e.key.keysym.sym)
@@ -106,8 +113,8 @@ void GameScene::HandleEvents(SDL_Event& e)
         case SDLK_ESCAPE:
             mParentGame.ChangeScene<MainMenuScene>();
             break;
-        case SDLK_r:
-            mPlayer->GetGun().Reload();
+        case SDLK_SPACE:
+            mPlayer->TryShoot();
             break;
         }
     }
@@ -117,31 +124,18 @@ void GameScene::HandleEvents(SDL_Event& e)
 
     if(e.type == SDL_MOUSEBUTTONDOWN)
     {
-        if(mPlayer->TryShoot())
-        {
-            vec2d origin = mPlayer->GetPos();
-            vec2d dir = mPlayer->GetDir();
-
-            CastEngine::Map::RayCastDesc desc;
-            mMap.WallRayCast(origin, dir, desc);
-
-            auto [hitEnt, entDist] = mEntManager.RayCast(origin, dir, desc.perpWallDist);
-
-            if(hitEnt)
-                hitEnt->Destroy();
-        }
+        mPlayer->TryShoot();
     }
 }
 
 void GameScene::Update(float dtMs)
 {
     mEntManager.UpdateEntities(dtMs);
-    mEntManager.RemoveIf([](CastEngine::Entity* ent){
+    mEntManager.RemoveIf([](std::unique_ptr<CastEngine::Entity>& ent){
         return !ent->IsAlive();
     });
 
-    mRenderer.UpdateMinimap(mEntManager, mMap);
-    mHud.Update(*mPlayer);
+    mHud.Update(mEntManager, mMap);
 
     mCam.SetDir(mPlayer->GetDir());
     mCam.SetPos(mPlayer->GetPos());
@@ -155,13 +149,11 @@ void GameScene::Draw()
 
     SDL_Color topColour = {40, 40, 40, 255};
     SDL_Color bottColour = {60, 60, 60, 255};
-    mRenderer.RenderCeilingAndFloor(topColour, bottColour);
+    mRenderer.RenderSolidCeilingFloor(topColour, bottColour);
 
     mRenderer.RenderCameraView(mMap);
 
     mEntManager.DrawEntities(mRenderer);
-
-    mRenderer.RenderMinimap();
 
     mHud.Draw();
 

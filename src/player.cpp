@@ -3,13 +3,17 @@
 #include "castengine/logger.hpp"
 #include "castengine/map.hpp"
 #include "castengine/world.hpp"
+#include "castengine/entitymanager.hpp"
 
 Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity(world), mCurrentGun(render)
 {
     GunDef shotgun;
+
+    shotgun.animFilePath[WeaponAnimationType::Idle] = "res/textures/guns/dbshotgun/IDLEING";
+    shotgun.animFilePath[WeaponAnimationType::Shoot] = "res/textures/guns/dbshotgun/FIREING";
+    shotgun.animFilePath[WeaponAnimationType::Reload] = "res/textures/guns/dbshotgun/RELOADING";
+    shotgun.animFilePath[WeaponAnimationType::Walk] = "res/textures/guns/dbshotgun/WALKING";
     
-    shotgun.animFilePath = "./res/textures/guns/dbshotgun/FIREING";
-    shotgun.animName = "shotgun.firing";
     shotgun.damage = 50;
     shotgun.fireRateMs = 1000;
     shotgun.magSize = 4;
@@ -22,6 +26,23 @@ Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity
         LogMsg(ERROR, "failed to load shotgun");
     }
 
+}
+
+void Player::TryShoot()
+{
+    if(!mCurrentGun.TryShoot())
+        return;
+
+    vec2d origin = mPos;
+    vec2d dir = GetDir();
+
+    CastEngine::Map::RayCastDesc desc;
+    mWorld.GetMap().WallRayCast(origin, dir, desc);
+
+    auto [hitEnt, entDist] = mWorld.GetEntityManager().RayCast(origin, dir, desc.perpWallDist);
+
+    if(hitEnt)
+        hitEnt->Destroy();
 }
 
 void Player::HandleKeyInput(const SDL_Event &e)
@@ -40,6 +61,10 @@ void Player::HandleKeyInput(const SDL_Event &e)
 
     switch(e.key.keysym.sym)
     {
+        case SDLK_r:
+            if(state)
+                mCurrentGun.BeginReload();
+            break;
         case SDLK_w:
             State.forward = state;
             break;
@@ -98,7 +123,7 @@ void Player::Update(float dtMs)
 
     vec2d newPos = mPos + (mVel * dtMs);
 
-    ResolveWallCollision(newPos);
+    AttemptMove(newPos);
 
     mCurrentGun.Update(dtMs);
 }

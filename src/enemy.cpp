@@ -8,21 +8,35 @@
 
 void Enemy::Think()
 {
-    mAcc = vec2d(-0.0005f, 0.0f);
+    if(mTimer >= 5000)
+    {
+        mTimer = 0;
+
+        vec2d playerPos = mWorld.GetPlayerPos();
+        Node destNode = { static_cast<int>(playerPos.x), static_cast<int>(playerPos.y), -1, -1, 0.0f, 0.0f, 0.0f };
+
+        mAI.SetDestination(destNode, mWorld.GetMap());
+    }
 }
 
 void Enemy::Update(float dtMs)
 {
+    mTimer += dtMs;
+
     Think();
 
+    vec2d targetPos = mAI.GetCurrentTarget();
+    vec2d toTarget = targetPos - mPos;
+    vec2d desiredVel = toTarget.Normalised() * mMaxSpeed;
+
+    mVel = desiredVel;
     mVel += mAcc * dtMs;
     if(mVel.GetMagnitude() > mMaxSpeed)
         mVel.SetMagnitude(mMaxSpeed);
 
-    ResolveWallCollision(mPos + (mVel * dtMs));
-}
+    AttemptMove(mPos + (mVel * dtMs));
 
-void Enemy::Draw(CastEngine::Renderer& render)
-{
-    render.RenderSprite(mTex, mPos);
+    mDir += 0.01f * dtMs;
+    while(mDir > M_PI * 2.f)
+        mDir -= M_PI * 2.f;
 }

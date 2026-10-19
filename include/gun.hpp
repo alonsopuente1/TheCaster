@@ -1,14 +1,16 @@
 #pragma once
 
-#include "castengine/animatedtexture.hpp"
+#include <unordered_map>
 
+#include "castengine/animatedtexture.hpp"
+#include "weaponanimator.hpp"
 
 struct GunDef
 {
 
-    std::string animFilePath; // file path to folder containing
-                                // gun shooting frames
-    std::string animName;
+
+    std::unordered_map<WeaponAnimationType, std::string> animFilePath; // map of animation names to file paths
+
 
     int fireRateMs;
     float texScale;     // value to scale gun textures by
@@ -26,6 +28,12 @@ class Gun
     
 private:
 
+    enum class GunState : int
+    {
+        Ready,
+        Reloading
+    };
+
     int mAmmo;       // amount of bullets currently in magazine
     int mReserves;   // amount of bullets left over
     int mMagSize;    // max size of magazine
@@ -36,23 +44,29 @@ private:
     int mDamage;
     float mTexScale;
 
-    CastEngine::AnimatedTexture mAnim;
+    WeaponAnimator mAnim;
     
     std::string mName;
 
+    CastEngine::Renderer& mRender;
+    
+    GunState mState = GunState::Ready;
+    
+    void FinishReload();
+    
 public:
 
-    Gun(CastEngine::Renderer& rend) : mAnim(rend) {}
-    ~Gun() { mAnim.Destroy(); }
+    Gun(CastEngine::Renderer& rend) : mRender(rend) {}
 
     bool Load(GunDef& def);
     void Update(float dtMs);
     void Draw(CastEngine::Renderer& render);
         
     bool TryShoot();
-    void Reload();
 
-    inline bool IsReady() { return mCooldownMs >= mFireRateMs; }
+    void BeginReload();
+
+    inline bool IsReady() { return mCooldownMs >= mFireRateMs && mState == GunState::Ready; }
 
     inline int GetDamage() { return mDamage; }
 

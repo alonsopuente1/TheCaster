@@ -7,6 +7,8 @@
 namespace CastEngine
 {
     class Renderer;
+    class EntityManager;
+    class Map;
 }
 
 class Player;
@@ -19,15 +21,22 @@ private:
     CastEngine::HUDElement mHealth;
     CastEngine::HUDElement mScore;
 
+    CastEngine::Texture* mMinimapTex;
+
     CastEngine::Renderer& mParentRender;
         
-public:
+    void UpdatePlayerInfo(Player& player);
+    void UpdateMinimap(const CastEngine::EntityManager& entManager, const CastEngine::Map& map);
+    
+    void DrawMinimap();
 
+public:
+    
     HUD(CastEngine::Renderer& rend) : mAmmo(rend), mHealth(rend), mScore(rend), mParentRender(rend) {}
     ~HUD() { mAmmo.Destroy(); mHealth.Destroy(); mScore.Destroy(); }
     
     void Init(TTF_Font* font);
-    void Update(Player& player);
+    void Update(CastEngine::EntityManager& entManager, const CastEngine::Map& map);
     void Draw();
 
 };
