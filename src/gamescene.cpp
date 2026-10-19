@@ -2,6 +2,7 @@
 
 #include "mainmenuscene.hpp"
 #include "enemy.hpp"
+#include "ammopickup.hpp"
 
 #include "castengine/game.hpp"
 #include "castengine/logger.hpp"
@@ -93,6 +94,13 @@ void GameScene::OnEnter()
     }
 
     mPlayer = dynamic_cast<Player*>(mEntManager.PushEntity(std::make_unique<Player>(*this, mRenderer)));
+
+    CastEngine::Texture* ammoBoxTex = mRenderer.texBank.PushTexture(CastEngine::Texture(mWindow, "./res/textures/ammobox.png"));
+
+    AmmoPickup* ent = dynamic_cast<AmmoPickup*>(mEntManager.PushEntity(std::make_unique<AmmoPickup>(*this, ammoBoxTex)));
+    ent->SetTexture(ammoBoxTex);
+    ent->SetPos(vec2d(10.f, 4.f));
+    ent->SetAmmo(4);
 
     mPlayer->SetPos(args.startPos);
     mPlayer->SetRotateSpeed(args.rotateSpeed);
