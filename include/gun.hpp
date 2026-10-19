@@ -70,7 +70,7 @@ public:
 
     inline int GetDamage() { return mDamage; }
 
-    inline void AddAmmo(int numBullets) { mAmmo += numBullets; }
+    inline void AddAmmo(int numBullets) { mAmmo = std::min(numBullets + mAmmo, mMagSize); }
     inline int GetAmmo() const { return mAmmo; }
     inline int GetMagSize() const { return mMagSize; }
     inline int GetReserves() const { return mReserves; }
