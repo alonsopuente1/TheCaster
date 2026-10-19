@@ -5,6 +5,8 @@
 #include "castengine/world.hpp"
 #include "castengine/entitymanager.hpp"
 
+#include "enemy.hpp"
+
 Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity(world), mCurrentGun(render)
 {
     GunDef shotgun;
@@ -41,7 +43,7 @@ void Player::TryShoot()
 
     auto [hitEnt, entDist] = mWorld.GetEntityManager().RayCast(origin, dir, desc.perpWallDist);
 
-    if(hitEnt)
+    if(CastEngine::IsBaseEntity<Enemy>(hitEnt))
         hitEnt->Destroy();
 }
 
