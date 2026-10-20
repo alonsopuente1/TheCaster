@@ -23,10 +23,25 @@ Player::Player(CastEngine::IWorld &world, CastEngine::Renderer &render) : Entity
     shotgun.texScale = 0.7f;
     shotgun.name = "Shotgun";
 
-    if(!mCurrentGun.Load(shotgun))
+    GunDef ak;
+    
+    ak.animFilePath[WeaponAnimationType::Idle] = "res/textures/guns/aks-74u/Idle";
+    ak.animFilePath[WeaponAnimationType::Shoot] = "res/textures/guns/aks-74u/Fire_single";
+    ak.animFilePath[WeaponAnimationType::Reload] = "res/textures/guns/aks-74u/reload";
+
+    ak.fireRateMs = 100;
+    ak.magSize = 30;
+    ak.reserves = 60;
+    ak.name = "AKS-74U";
+    ak.damage = 20;
+    ak.texScale = 0.8f;
+
+    if(!mCurrentGun.Load(ak))
     {  
         LogMsg(ERROR, "failed to load shotgun");
     }
+
+
 
 }
 
