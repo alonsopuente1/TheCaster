@@ -15,7 +15,7 @@ void AmmoPickup::Update(float dtMs)
 
 void AmmoPickup::Draw(CastEngine::Renderer &render)
 {
-    render.RenderSpriteEx(GetTexture(), mPos, 0.5f, GetTexture()->GetHeight() + 15.f);
+    render.RenderSpriteEx(GetTexture(), mPos, 0.75f, GetTexture()->GetHeight() + 15.f);
 }
 
 void AmmoPickup::OnCollision(Entity &other)
