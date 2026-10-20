@@ -100,6 +100,9 @@ void Player::HandleKeyInput(const SDL_Event &e)
         case SDLK_RIGHT:
             State.lookright = state;
             break;
+        case SDLK_SPACE:
+            State.shooting = state;
+            break;
     }
 }
 
@@ -123,6 +126,9 @@ void Player::Update(float dtMs)
     if(State.lookright)
         mViewAngle -= mRotateSpeed * dtMs;
         
+    if(State.shooting)
+        TryShoot();
+
     // if player not moving apply friction
     if(!newAcc.GetMagnitude())
         newAcc = mVel * -0.05f;

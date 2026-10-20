@@ -8,11 +8,6 @@
 
 #include "gun.hpp"
 
-namespace CastEngine
-{
-    class Map;
-}
-
 class Player : public CastEngine::Entity
 {
 
