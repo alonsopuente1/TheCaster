@@ -131,9 +131,9 @@ void Player::Update(float dtMs)
 
     // if player not moving apply friction
     if(!newAcc.GetMagnitude())
-        newAcc = mVel * -0.05f;
+        newAcc = mVel * -0.005f;
     else
-        newAcc.SetMagnitude(0.0005f);
+        newAcc.SetMagnitude(0.00005f);
 
     // update velocity
     mVel += newAcc * dtMs;

@@ -154,8 +154,8 @@ void GameScene::Draw()
 
     SDL_Color topColour = {40, 40, 40, 255};
     SDL_Color bottColour = {60, 60, 60, 255};
-    mRenderer.RenderSolidCeilingFloor(topColour, bottColour);
-
+    // mRenderer.RenderSolidCeilingFloor(topColour, bottColour);
+    mRenderer.RenderTexturedCeilingFloor();
     mRenderer.RenderCameraView(mMap);
 
     mEntManager.DrawEntities(mRenderer);
